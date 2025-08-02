@@ -13,8 +13,16 @@ export class TaskView {
     tasks.forEach((task, idx) => {
       const li = document.createElement('li');
       li.textContent = task;
-      // TODO: Agrega aquí el botón y la lógica para eliminar la tarea
-      // TODO: Agrega aquí el botón y la lógica para editar la tarea
+      //Botón logica eliminar tarea:
+      const deleteBtn = document.createElement('button');
+      deleteBtn.classList.add('deleteBtn');
+      deleteBtn.textContent = 'Eliminar';
+      li.insertAdjacentElement('beforeend',deleteBtn);
+      //Botón logica editar tarea
+      const editBtn = document.createElement('button');
+      editBtn.classList.add('editBtn');
+      editBtn.textContent = 'Editar';
+      li.insertAdjacentElement('beforeend', editBtn)
       this.list.appendChild(li);
     });
   }
@@ -28,9 +36,34 @@ export class TaskView {
     };
   }
 
-  // TODO: Asocia el evento de eliminar tarea a la lista
-  // bindRemoveTask(handler) { ... }
+  // Evento de eleminar tarea asociado.
+  bindRemoveTask(handler) {
+    const deleteBtns = [...document.querySelectorAll('.deleteBtn')]
+    deleteBtns.forEach((btn,idx) => {
+      btn.onclick = e => {
+        e.preventDefault();
+        handler(idx); //Llama al controlador con el indice de lo que hay que borrar.
+      }
+    })
+  }
 
-  // TODO: Asocia el evento de editar tarea a la lista
-  // bindEditTask(handler) { ... }
+  // Asocia el evento de editar tarea a la lista
+  bindEditTask(handler) {
+    const editBtns = [...document.querySelectorAll('.editBtn')];
+    editBtns.forEach((btn, idx) => {
+      btn.onclick = e => {
+        const li = btn.parentElement
+        li.innerHTML = `
+        <form>
+          <input type="text" class="editInput" placeholder="Editar..." required/>
+          <button type="submit">Listo</button>
+        </form>
+        `
+        li.firstElementChild.onsubmit = e => {
+          e.preventDefault();
+          handler(idx, li.firstElementChild.firstElementChild.value)
+        }
+      }
+    })
+  }
 } 
